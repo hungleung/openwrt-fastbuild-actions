@@ -34,3 +34,7 @@ install_package() {
 # Note that to have it compiled, you also have to set its CONFIG_* options
 # Example:
 # install_package mentohust https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk.git
+install_package openwrt-vlmcsd https://github.com/mchome/openwrt-vlmcsd.git
+install_package luci-app-vlmcsd git clone https://github.com/mchome/luci-app-vlmcsd.git
+install_package openwrt-v2ray https://github.com/kuoruan/openwrt-v2ray.git
+install_package luci-app-v2ray https://github.com/kuoruan/luci-app-v2ray.git

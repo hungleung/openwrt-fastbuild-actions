@@ -616,9 +616,11 @@ jobs:
         scripts/initenv.sh
 
     - name: Clone all source code
-      env: 
-        REPO_URL: https://github.com/coolsnowwolf/lede
-        REPO_BRANCH: master
+      env:
+        REPO_URL: https://github.com/openwrt/openwrt
+        REPO_BRANCH: openwrt-19.07      
+        #REPO_URL: https://github.com/coolsnowwolf/lede
+        #REPO_BRANCH: master
       run:
         scripts/update_repo.sh
         OPT_UPDATE_FEEDS=1 scripts/update_feeds.sh
