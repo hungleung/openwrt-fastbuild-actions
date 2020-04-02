@@ -1,9 +1,6 @@
 CONFIG_TARGET_armvirt=y
 CONFIG_TARGET_armvirt_64=y
 CONFIG_TARGET_armvirt_64_Default=y
-# CONFIG_BUSYBOX_DEFAULT_FEATURE_IPV6 is not set
-# CONFIG_IPV6 is not set
-# CONFIG_KERNEL_IPV6 is not set
 CONFIG_LIBCURL_COOKIES=y
 CONFIG_LIBCURL_FILE=y
 CONFIG_LIBCURL_FTP=y
@@ -30,13 +27,27 @@ CONFIG_PACKAGE_ca-certificates=y
 CONFIG_PACKAGE_cgi-io=y
 CONFIG_PACKAGE_curl=y
 CONFIG_PACKAGE_ddns-scripts=y
+# CONFIG_PACKAGE_dnsmasq is not set
+CONFIG_PACKAGE_dnsmasq-full=y
+CONFIG_PACKAGE_dnsmasq_full_auth=y
+CONFIG_PACKAGE_dnsmasq_full_conntrack=y
+CONFIG_PACKAGE_dnsmasq_full_dhcp=y
+CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
+CONFIG_PACKAGE_dnsmasq_full_dnssec=y
+CONFIG_PACKAGE_dnsmasq_full_ipset=y
+CONFIG_PACKAGE_dnsmasq_full_noid=y
+CONFIG_PACKAGE_dnsmasq_full_tftp=y
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_ip-tiny=y
 CONFIG_PACKAGE_ipset=y
 CONFIG_PACKAGE_iptables-mod-tproxy=y
+CONFIG_PACKAGE_kmod-ipt-ipset=y
 CONFIG_PACKAGE_kmod-ipt-tproxy=y
+CONFIG_PACKAGE_kmod-nf-conntrack-netlink=y
+CONFIG_PACKAGE_kmod-nfnetlink=y
 CONFIG_PACKAGE_libatomic=y
 CONFIG_PACKAGE_libcurl=y
+CONFIG_PACKAGE_libgmp=y
 CONFIG_PACKAGE_libipset=y
 CONFIG_PACKAGE_libiwinfo=y
 CONFIG_PACKAGE_libiwinfo-lua=y
@@ -44,7 +55,11 @@ CONFIG_PACKAGE_liblua=y
 CONFIG_PACKAGE_liblucihttp=y
 CONFIG_PACKAGE_liblucihttp-lua=y
 CONFIG_PACKAGE_libmbedtls=y
+CONFIG_PACKAGE_libmnl=y
 CONFIG_PACKAGE_libncurses=y
+CONFIG_PACKAGE_libnetfilter-conntrack=y
+CONFIG_PACKAGE_libnettle=y
+CONFIG_PACKAGE_libnfnetlink=y
 CONFIG_PACKAGE_libopenssl=y
 CONFIG_PACKAGE_libopenssl-conf=y
 CONFIG_PACKAGE_libpcre=y
@@ -79,6 +94,7 @@ CONFIG_PACKAGE_luci-mod-admin-full=y
 CONFIG_PACKAGE_luci-mod-network=y
 CONFIG_PACKAGE_luci-mod-status=y
 CONFIG_PACKAGE_luci-mod-system=y
+CONFIG_PACKAGE_luci-proto-ipv6=y
 CONFIG_PACKAGE_luci-proto-ppp=y
 CONFIG_PACKAGE_luci-ssl-openssl=y
 CONFIG_PACKAGE_luci-theme-bootstrap=y
@@ -98,8 +114,5 @@ CONFIG_PACKAGE_v2ray-core=y
 CONFIG_PACKAGE_vlmcsd=y
 CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_zlib=y
-# CONFIG_TARGET_ROOTFS_CPIOGZ is not set
 CONFIG_V2RAY_DISABLE_NONE=y
 CONFIG_V2RAY_JSON_V2CTL=y
-CONFIG_PACKAGE_kmod-nf-ipt6=y
-CONFIG_PACKAGE_libip6tc=y
