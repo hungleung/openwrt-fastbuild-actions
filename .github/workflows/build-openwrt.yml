@@ -51,6 +51,7 @@ env:
   DOCKERFILE_INC: Dockerfile-inc
   DOCKERFILE_PACKAGE: Dockerfile-package
   CONFIG_FILE_DEFAULT: 'config.diff.default'
+  UPLOAD_COWTRANSFER: true
 
 name: Build OpenWrt
 
@@ -315,6 +316,12 @@ jobs:
       with:
         name: OpenWrt_firmware
         path: ${{ env.FIRMWARE }}
+        
+    - name: 上传至奶牛快传
+      if: env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
+      run: |
+        curl -sL https://git.io/cowtransfer | sh
+        ./cowtransfer-uploader -s -p 8 ${FIRMWARE}
 
     # failure checking
     - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
