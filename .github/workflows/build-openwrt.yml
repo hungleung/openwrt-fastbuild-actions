@@ -167,7 +167,7 @@ jobs:
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#rebuild#')) || github.event.client_payload.rebuild || github.event.deployment.payload.rebuild }}" != "xtrue" ] || OPT_REBUILD=1
         echo "::set-env name=OPT_REBUILD::${OPT_REBUILD}"
 
-        OPT_DEBUG=1
+        OPT_DEBUG=0
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#debug#')) || github.event.client_payload.debug || github.event.deployment.payload.debug }}" != "xtrue" ] || OPT_DEBUG=1
         echo "::set-env name=OPT_DEBUG::${OPT_DEBUG}"
 
@@ -255,14 +255,6 @@ jobs:
 
     - name: Print disk space
       run: df -h
-
-    # Allow intermediate customization
-    - name: Debug set, wait for SSH connection (timeout 5min)
-      if: env.OPT_DEBUG == '1'
-      env:
-        TIMEOUT_MIN: 3
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
 
     - name: Compile firmware and packages
       run: |
@@ -499,7 +491,7 @@ jobs:
     - name: Debug set, wait for SSH connection (timeout 5min)
       if: env.OPT_DEBUG == '1'
       env:
-        TIMEOUT_MIN: 5
+        TIMEOUT_MIN: 3
         TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
       uses: tete1030/debugger-action@master
 
@@ -578,21 +570,21 @@ jobs:
         name: OpenWrt_new_packages
         path: openwrt/bin
 
-    # failure checking
-    - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
-      if: failure() || env.OPT_DEBUG == '1'
-      env:
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
-
-    - name: Upload debugging changes
-      if: |
-        (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
-        || env.OPT_DEBUG == '1'
-      run: |
-        . docker.sh
-        docker tag "${DK_LAST_BUILD_TARGET}" "$(_get_full_image_name_tag_for_build)"
-        push_image_and_cache
+    # # failure checking
+    # - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
+    #   if: failure() || env.OPT_DEBUG == '1'
+    #   env:
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+    #
+    # - name: Upload debugging changes
+    #   if: |
+    #     (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
+    #     || env.OPT_DEBUG == '1'
+    #   run: |
+    #     . docker.sh
+    #     docker tag "${DK_LAST_BUILD_TARGET}" "$(_get_full_image_name_tag_for_build)"
+    #     push_image_and_cache
 
   build-direct:
     runs-on: ubuntu-18.04
@@ -639,7 +631,7 @@ jobs:
     - name: Debug set, wait for SSH connection (timeout 5min)
       if: env.OPT_DEBUG == '1'
       env:
-        TIMEOUT_MIN: 5
+        TIMEOUT_MIN: 3
       uses: tete1030/debugger-action@master
 
     - name: Download packages
