@@ -243,15 +243,18 @@ jobs:
         . docker.sh
         build_image clone
 
+
+    - name: Apply customizations
+      run: |
+        . docker.sh
+        build_image custom        
+
     - name: Download packages
       run: |
         . docker.sh
         build_image download
 
-    - name: Apply customizations
-      run: |
-        . docker.sh
-        build_image custom
+
 
     - name: Print disk space
       run: df -h
