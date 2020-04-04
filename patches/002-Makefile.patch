@@ -1,0 +1,10 @@
+--- target/linux/armvirt/Makefile	2020-04-04 13:12:37.824604100 +0800
++++ Makefile	2020-04-04 14:45:34.078169400 +0800
+@@ -9,7 +9,7 @@
+ BOARD:=armvirt
+ BOARDNAME:=QEMU ARM Virtual Machine
+ FEATURES:=fpu pci rtc usb
+-FEATURES+=cpiogz ext4 ramdisk squashfs targz
++FEATURES+=targz
+ MAINTAINER:=Florian Fainelli <f.fainelli@gmail.com>, \
+ 	Yousong Zhou <yszhou4tech@gmail.com>
