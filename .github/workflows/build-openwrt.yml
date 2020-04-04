@@ -243,26 +243,26 @@ jobs:
         . docker.sh
         build_image clone
 
-    # Allow intermediate customization
-    - name: Debug set, wait for SSH connection (timeout 5min)
-      if: env.OPT_DEBUG == '1'
-      env:
-        TIMEOUT_MIN: 5
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
+    - name: Download packages
+      run: |
+        . docker.sh
+        build_image download
 
     - name: Apply customizations
       run: |
         . docker.sh
         build_image custom
 
-    - name: Download packages
-      run: |
-        . docker.sh
-        build_image download
-
     - name: Print disk space
       run: df -h
+
+    # Allow intermediate customization
+    - name: Debug set, wait for SSH connection (timeout 5min)
+      if: env.OPT_DEBUG == '1'
+      env:
+        TIMEOUT_MIN: 3
+        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+      uses: tete1030/debugger-action@master
 
     - name: Compile firmware and packages
       run: |
@@ -326,22 +326,22 @@ jobs:
         ./cowtransfer-uploader -s -p 8 ${FIRMWARE}
 
     # failure checking
-    - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
-      if: |
-        failure()
-        || env.OPT_DEBUG == '1'
-      env:
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
-
-    - name: Upload debugging changes
-      if: |
-        (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
-        || env.OPT_DEBUG == '1'
-      run: |
-        . docker.sh
-        docker tag "${DK_LAST_BUILD_TARGET}" "$(_get_full_image_name_tag_for_build)"
-        push_image_and_cache
+    # - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
+    #   if: |
+    #     failure()
+    #     || env.OPT_DEBUG == '1'
+    #   env:
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+    #
+    # - name: Upload debugging changes
+    #   if: |
+    #     (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
+    #     || env.OPT_DEBUG == '1'
+    #   run: |
+    #     . docker.sh
+    #     docker tag "${DK_LAST_BUILD_TARGET}" "$(_get_full_image_name_tag_for_build)"
+    #     push_image_and_cache
 
   build-package:
     runs-on: ubuntu-18.04
