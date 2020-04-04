@@ -101,7 +101,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        mode: [normal, test]
+        # mode: [normal, test]
+        mode: [normal]
         include:
         - mode: normal
           title: build-inc
@@ -167,7 +168,7 @@ jobs:
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#rebuild#')) || github.event.client_payload.rebuild || github.event.deployment.payload.rebuild }}" != "xtrue" ] || OPT_REBUILD=1
         echo "::set-env name=OPT_REBUILD::${OPT_REBUILD}"
 
-        OPT_DEBUG=0
+        OPT_DEBUG=1
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#debug#')) || github.event.client_payload.debug || github.event.deployment.payload.debug }}" != "xtrue" ] || OPT_DEBUG=1
         echo "::set-env name=OPT_DEBUG::${OPT_DEBUG}"
 
@@ -326,13 +327,13 @@ jobs:
         ./cowtransfer-uploader -s -p 8 ${FIRMWARE}
 
     # failure checking
-    - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
-      if: |
-        failure()
-        || env.OPT_DEBUG == '1'
-      env:
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
+    # - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
+    #   if: |
+    #     failure()
+    #     || env.OPT_DEBUG == '1'
+    #   env:
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
 
     - name: Upload debugging changes
       if: |
