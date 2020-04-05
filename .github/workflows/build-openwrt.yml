@@ -257,13 +257,13 @@ jobs:
         . docker.sh
         build_image custom
 
-    # Allow intermediate customization
-    - name: Debug set, wait for SSH connection (timeout 5min)
-      if: env.OPT_DEBUG == '1'
-      env:
-        TIMEOUT_MIN: 5
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 5
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
 
 
     - name: Download packages
@@ -273,12 +273,12 @@ jobs:
 
     - name: Print disk space
       run: df -h
-      
+
     # Allow intermediate customization
     - name: Debug set, wait for SSH connection (timeout 5min)
       if: env.OPT_DEBUG == '1'
       env:
-        TIMEOUT_MIN: 5
+        TIMEOUT_MIN: 3
         TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
       uses: tete1030/debugger-action@master
 
@@ -314,12 +314,12 @@ jobs:
         copy_files /home/builder/openwrt/bin "$(pwd)/openwrt/bin"
         echo "::set-output name=status::success"
 
-    - name: Upload bin directory
-      uses: actions/upload-artifact@master
-      if: steps.copydir.outputs.status == 'success' && !cancelled()
-      with:
-        name: OpenWrt_bin
-        path: openwrt/bin
+    # - name: Upload bin directory
+    #   uses: actions/upload-artifact@master
+    #   if: steps.copydir.outputs.status == 'success' && !cancelled()
+    #   with:
+    #     name: OpenWrt_bin
+    #     path: openwrt/bin
 
     - name: Organize files
       id: organize
@@ -327,6 +327,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         rm -rf packages
+        rm -rf *squashfs.gz *cpio.gz sha256sums *Image *manifest
         echo "::set-env name=FIRMWARE::$(pwd)"
         echo "::set-output name=status::success"
 
