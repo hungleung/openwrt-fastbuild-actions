@@ -274,13 +274,13 @@ jobs:
     - name: Print disk space
       run: df -h
 
-    # Allow intermediate customization
-    - name: Debug set, wait for SSH connection (timeout 5min)
-      if: env.OPT_DEBUG == '1'
-      env:
-        TIMEOUT_MIN: 3
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 3
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
 
     - name: Compile firmware and packages
       run: |
@@ -326,8 +326,7 @@ jobs:
       if: steps.copydir.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        rm -rf packages
-        rm -rf *squashfs.gz *cpio.gz sha256sums *Image *manifest
+        rm -rf packages openwrt-armvirt-64-Image-initramfs openwrt-armvirt-64-root.squashfs.gz openwrt-armvirt-64-rootfs.cpio.gz sha256sums openwrt-armvirt-64-Image openwrt-armvirt-64-default.manifest
         echo "::set-env name=FIRMWARE::$(pwd)"
         echo "::set-output name=status::success"
 
