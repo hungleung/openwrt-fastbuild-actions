@@ -244,6 +244,19 @@ jobs:
         . docker.sh
         build_image clone
 
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 5
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+    #
+    - name: Apply customizations
+      run: |
+        . docker.sh
+        build_image custom
+
     # Allow intermediate customization
     - name: Debug set, wait for SSH connection (timeout 5min)
       if: env.OPT_DEBUG == '1'
@@ -252,10 +265,6 @@ jobs:
         TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
       uses: tete1030/debugger-action@master
 
-    - name: Apply customizations
-      run: |
-        . docker.sh
-        build_image custom
 
     - name: Download packages
       run: |
@@ -264,6 +273,14 @@ jobs:
 
     - name: Print disk space
       run: df -h
+      
+    # Allow intermediate customization
+    - name: Debug set, wait for SSH connection (timeout 5min)
+      if: env.OPT_DEBUG == '1'
+      env:
+        TIMEOUT_MIN: 5
+        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+      uses: tete1030/debugger-action@master
 
     - name: Compile firmware and packages
       run: |
