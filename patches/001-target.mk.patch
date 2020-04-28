@@ -13,7 +13,7 @@
 -luci-app-sfe luci-app-flowoffload luci-app-nlbwmon luci-app-accesscontrol luci-app-cpufreq \
 -ddns-scripts_aliyun ddns-scripts_dnspod
 -# For nas targets
-+DEFAULT_PACKAGES:=base-files libc libgcc busybox dropbear mtd uci opkg netifd fstools uclient-fetch logd urandom-seed urngd wget default-settings luci-ssl-openssl luci-app-ddns luci-app-upnp luci-app-udpxy luci-app-v2ray luci-app-vlmcsd luci-app-acme acme-dnsapi v2ray-core curl htop bind-dig
++DEFAULT_PACKAGES:=base-files libc libgcc busybox dropbear mtd uci opkg netifd fstools uclient-fetch logd urandom-seed urngd wget default-settings luci-ssl-openssl luci-app-ddns luci-app-upnp luci-app-udpxy luci-app-vlmcsd luci-app-acme acme-dnsapi curl htop bind-dig luci-app-ssr-plus
  DEFAULT_PACKAGES.nas:=block-mount fdisk lsblk mdadm
  # For router targets
 -DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr
