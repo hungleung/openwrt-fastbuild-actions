@@ -99,12 +99,13 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        mode: [normal, test]
+        # mode: [normal, test]
+        mode: [normal]
         include:
         - mode: normal
           title: build-inc
-        - mode: test
-          title: Fast checking build-inc
+        # - mode: test
+        #   title: Fast checking build-inc
     env:
       # Not recommended to change as they are already in optimal condition
       # 不推荐修改，已处在最优状态
@@ -165,7 +166,7 @@ jobs:
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#rebuild#')) || github.event.client_payload.rebuild || github.event.deployment.payload.rebuild }}" != "xtrue" ] || OPT_REBUILD=1
         echo "::set-env name=OPT_REBUILD::${OPT_REBUILD}"
 
-        OPT_DEBUG=0
+        OPT_DEBUG=1
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#debug#')) || github.event.client_payload.debug || github.event.deployment.payload.debug }}" != "xtrue" ] || OPT_DEBUG=1
         echo "::set-env name=OPT_DEBUG::${OPT_DEBUG}"
 
@@ -241,18 +242,27 @@ jobs:
         . docker.sh
         build_image clone
 
-    # Allow intermediate customization
-    - name: Debug set, wait for SSH connection (timeout 5min)
-      if: env.OPT_DEBUG == '1'
-      env:
-        TIMEOUT_MIN: 5
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
-
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 5
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+    #
     - name: Apply customizations
       run: |
         . docker.sh
         build_image custom
+
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 5
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+
 
     - name: Download packages
       run: |
@@ -261,6 +271,14 @@ jobs:
 
     - name: Print disk space
       run: df -h
+
+    # # Allow intermediate customization
+    # - name: Debug set, wait for SSH connection (timeout 5min)
+    #   if: env.OPT_DEBUG == '1'
+    #   env:
+    #     TIMEOUT_MIN: 3
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
 
     - name: Compile firmware and packages
       run: |
@@ -294,44 +312,50 @@ jobs:
         copy_files /home/builder/openwrt/bin "$(pwd)/openwrt/bin"
         echo "::set-output name=status::success"
 
-    - name: Upload bin directory
-      uses: actions/upload-artifact@master
-      if: steps.copydir.outputs.status == 'success' && !cancelled()
-      with:
-        name: OpenWrt_bin
-        path: openwrt/bin
+    # - name: Upload bin directory
+    #   uses: actions/upload-artifact@master
+    #   if: steps.copydir.outputs.status == 'success' && !cancelled()
+    #   with:
+    #     name: OpenWrt_bin
+    #     path: openwrt/bin
 
     - name: Organize files
       id: organize
       if: steps.copydir.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        rm -rf packages
+        rm -rf packages openwrt-armvirt-64-Image-initramfs openwrt-armvirt-64-root.squashfs.gz openwrt-armvirt-64-rootfs.cpio.gz sha256sums openwrt-armvirt-64-Image openwrt-armvirt-64-default.manifest
         echo "::set-env name=FIRMWARE::$(pwd)"
         echo "::set-output name=status::success"
-  
+
     - name: Upload firmware
       uses: actions/upload-artifact@master
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: OpenWrt_firmware
         path: ${{ env.FIRMWARE }}
-        
+
     - name: 上传至奶牛快传
       if: env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
       run: |
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -s -p 8 ${FIRMWARE}
 
+    - name: 奶牛上传
+      if: env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
+      run: |
+        curl -sL https://git.io/cowtransfer | sh
+        ./cowtransfer-uploader -s -p 8 ${FIRMWARE}
+
     # failure checking
-    - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
-      if: |
-        failure()
-        || env.OPT_DEBUG == '1'
-      env:
-        TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
-      uses: tete1030/debugger-action@master
-    
+    # - name: Failed/debug set, wait for SSH connection (timeout 30min. You are safe to cancel the job now.)
+    #   if: |
+    #     failure()
+    #     || env.OPT_DEBUG == '1'
+    #   env:
+    #     TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
+    #   uses: tete1030/debugger-action@master
+
     - name: Upload debugging changes
       if: |
         (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
@@ -415,7 +439,7 @@ jobs:
           echo "::set-env name=${var_dockerfile}::${!var_dockerfile}"
         done
         echo "::set-env name=DK_DOCKERFILE::${DOCKERFILE_PACKAGE}"
-        
+
         OPT_UPDATE_FEEDS=0
         [ "x${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '#update_feeds#')) || github.event.client_payload.update_feeds || github.event.deployment.payload.update_feeds }}" != "xtrue" ] || OPT_UPDATE_FEEDS=1
         echo "::set-env name=OPT_UPDATE_FEEDS::${OPT_UPDATE_FEEDS}"
@@ -582,7 +606,7 @@ jobs:
       env:
         TMATE_DOCKER_IMAGE: ${{env.DK_LAST_BUILD_TARGET}}
       uses: tete1030/debugger-action@master
-    
+
     - name: Upload debugging changes
       if: |
         (failure() && env.OPT_PUSH_WHEN_FAIL == '1')
@@ -624,10 +648,8 @@ jobs:
 
     - name: Clone all source code
       env:
-        REPO_URL: https://github.com/openwrt/openwrt
-        REPO_BRANCH: openwrt-19.07      
-        #REPO_URL: https://github.com/coolsnowwolf/lede
-        #REPO_BRANCH: master
+        REPO_URL: https://github.com/coolsnowwolf/lede
+        REPO_BRANCH: master
       run:
         scripts/update_repo.sh
         OPT_UPDATE_FEEDS=1 scripts/update_feeds.sh
